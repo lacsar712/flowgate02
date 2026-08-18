@@ -46,7 +46,13 @@ func (b *NodeBag) Last(node string) (float64, bool) {
 }
 
 func WrapDeadbandDenied(op, node string) error {
-	return errors.New(op + ": node " + node + ": " + ErrDeadband.Error())
+	if strings.TrimSpace(op) == "" {
+		op = "subscribe"
+	}
+	if strings.TrimSpace(node) == "" {
+		node = "unnamed"
+	}
+	return fmt.Errorf("%s: node %s: %w", op, node, ErrDeadband)
 }
 
 func WaitSettle(ctx context.Context, d time.Duration) error {
